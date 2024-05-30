@@ -21,9 +21,10 @@ const PasswordForm = ({qr})=>{
       onSubmit={async (values, { setErrors, setStatus, setSubmitting})=>{
         try {
 
-          if(qr.configuration.password == values.password){
+          if(qr.configuration.password === values.password){
             setLoading(true);
             window.location.replace(qr.data.value);
+            setLoading(false);
           }else{
             setErrors({
               password: 'Incorrect Password.'
