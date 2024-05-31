@@ -3,6 +3,7 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { Formik } from "formik";
 import * as Yup from 'yup';
 import { useState } from "react";
+import { updateScanLimit } from "../../../network/qr_service";
 
 
 const PasswordForm = ({qr})=>{
@@ -23,6 +24,7 @@ const PasswordForm = ({qr})=>{
 
           if(qr.configuration.password === values.password){
             setLoading(true);
+            await updateScanLimit({ docId: qr.id });
             window.location.replace(qr.data.value);
             setLoading(false);
           }else{
@@ -32,6 +34,7 @@ const PasswordForm = ({qr})=>{
           }
 
         } catch (err) {
+          console.log(err)
           setStatus({ success: false });
           setErrors({ submit: err.message });
           setSubmitting(false);

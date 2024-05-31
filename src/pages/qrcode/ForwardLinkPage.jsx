@@ -1,13 +1,15 @@
 import { Box, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getQRCodeData } from "../../network/qr_service";
+import { getQRCodeData, updateScanLimit } from "../../network/qr_service";
 import PasswordDialog from "../../components/dialogs/PasswordDialog";
+import ScanLimitDialog from "../../components/dialogs/ScanLimitDialog";
 
 const ForwardLinkPage = ()=>{
   const { linkId } = useParams();
 
   const [showPassword, setShowPassword] = useState(false)
+  const [showScanLimit, setScanLimit] = useState(false)
   const [qr, setQR] = useState(null)
 
   useEffect(()=>{
@@ -17,19 +19,44 @@ const ForwardLinkPage = ()=>{
       if(resp.success){
         const qr = resp.data;
         setQR(qr);
-        if(qr && qr.configuration &&  qr.configuration.enablePassword){
-          setShowPassword(true);
+
+        const configuration = qr?.configuration;
+
+        if(!configuration){
+          window.location.replace(qr.data.value);
           return;
         }
-        window.location.replace(qr.data.value);
-      }
 
+        if(configuration?.enableScanLimit){
+
+          const scanLimit = parseInt(configuration?.scanLimit, 10);
+          const noOfScans = qr.scans ?? 0;
+
+          console.log(scanLimit)
+          console.log(noOfScans)
+
+          if(noOfScans<scanLimit){
+            if(configuration?.enablePassword){
+              setShowPassword(true);
+              return;
+            }else{
+              await updateScanLimit({docId: qr.id});
+              window.location.replace(qr.data.value);
+            }
+          }else{
+            setScanLimit(true)
+            return;
+          }
+        }
+      }
     }
     fetchData();
   }, [linkId])
 
   return (
     <>
+      <ScanLimitDialog 
+        open={showScanLimit} />
       <PasswordDialog 
         qr={qr}
         open={showPassword} />
