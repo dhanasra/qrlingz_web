@@ -22,11 +22,6 @@ const ForwardLinkPage = ()=>{
 
         const configuration = qr?.configuration;
 
-        if(!configuration){
-          window.location.replace(qr.data.og);
-          return;
-        }
-
         if(configuration?.enableScanLimit){
 
           const scanLimit = parseInt(configuration?.scanLimit, 10);
@@ -44,6 +39,12 @@ const ForwardLinkPage = ()=>{
             setScanLimit(true)
             return;
           }
+        }else if(configuration?.enablePassword){
+          setShowPassword(true);
+          return;
+        }else{
+          window.location.replace(qr.data.og);
+          return;
         }
       }
     }
