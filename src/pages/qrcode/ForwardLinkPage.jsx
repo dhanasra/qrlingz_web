@@ -23,7 +23,7 @@ const ForwardLinkPage = ()=>{
         const configuration = qr?.configuration;
 
         if(!configuration){
-          window.location.replace(qr.data.value);
+          window.location.replace(qr.data.og);
           return;
         }
 
@@ -32,16 +32,13 @@ const ForwardLinkPage = ()=>{
           const scanLimit = parseInt(configuration?.scanLimit, 10);
           const noOfScans = qr.scans ?? 0;
 
-          console.log(scanLimit)
-          console.log(noOfScans)
-
           if(noOfScans<scanLimit){
             if(configuration?.enablePassword){
               setShowPassword(true);
               return;
             }else{
               await updateScanLimit({docId: qr.id});
-              window.location.replace(qr.data.value);
+              window.location.replace(qr.data.og);
             }
           }else{
             setScanLimit(true)

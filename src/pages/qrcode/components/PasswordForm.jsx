@@ -25,7 +25,7 @@ const PasswordForm = ({qr})=>{
           if(qr.configuration.password === values.password){
             setLoading(true);
             await updateScanLimit({ docId: qr.id });
-            window.location.replace(qr.data.value);
+            window.location.replace(qr.data.og);
             setLoading(false);
           }else{
             setErrors({
