@@ -2,7 +2,7 @@ import { StarFilled } from "@ant-design/icons";
 import { Button, Divider, OutlinedInput, Rating, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
-const FeedbackForm = ({category, value, onChange})=>{
+const FeedbackForm = ({category, value, onChange, onSend})=>{
 
   const [ rating, setRating ] = useState(value?.rating ?? 0);
   const [ comment, setComment ] = useState(value?.comment ?? '');
@@ -56,7 +56,7 @@ const FeedbackForm = ({category, value, onChange})=>{
               onChange(rating, comment)
             }}  
           >Save and rate more</Button>
-          <Button disabled={!enable} variant="contained" fullWidth>Send Feedback</Button>
+          <Button onClick={()=>onSend()} disabled={!enable} variant="contained" fullWidth>Send Feedback</Button>
         </Stack>
       </Stack>
     </>

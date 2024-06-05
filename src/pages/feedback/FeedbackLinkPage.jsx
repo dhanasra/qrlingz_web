@@ -2,10 +2,13 @@ import { useParams } from "react-router-dom";
 import { Box, Grid, Typography } from "@mui/material";
 import { ArrowLeftOutlined, EditFilled } from "@ant-design/icons";
 import DOODLE_BG from "../../assets/doodle_bg_2.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FeedbackCategories from "./components/feedback_categories";
 import FeedbackForm from "./components/feedback_form";
 import ReviewsList from "./components/reviews_list";
+import SendDialog from "./components/send_dialog";
+import FeedbackSubmit from "./components/feedback_submit";
+import { getQRCodeData, updateScanLimit } from "../../network/qr_service";
 
 const FeedbackLinkPage = ()=>{
   const { linkId } = useParams();
@@ -15,57 +18,67 @@ const FeedbackLinkPage = ()=>{
 
   const [ reviews, setReviews ] = useState({});
   const [ showReview, setShowReview ] = useState(false);
+  const [ open, setOpen ] = useState(false);
+  const [ submitted, setSubmitted ] = useState(false);
 
-  // const [showPassword, setShowPassword] = useState(false)
-  // const [showScanLimit, setScanLimit] = useState(false)
-  // const [qr, setQR] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showScanLimit, setScanLimit] = useState(false)
+  const [qr, setQR] = useState(null)
 
-  // const [data, setData] = useState(  null)
+  const [data, setData] = useState(  null)
 
 
-  // useEffect(()=>{
-  //   async function fetchData(){
-  //     const resp = await getQRCodeData({ linkId });
+  useEffect(()=>{
+    async function fetchData(){
+      const resp = await getQRCodeData({ linkId });
 
-  //     if(resp.success){
-  //       const qr = resp.data;
-  //       setQR(qr);
+      if(resp.success){
+        const qr = resp.data;
+        setQR(qr);
 
-  //       const configuration = qr?.configuration;
+        const configuration = qr?.configuration;
 
-  //       if(configuration?.enableScanLimit){
+        if(configuration?.enableScanLimit){
 
-  //         const scanLimit = parseInt(configuration?.scanLimit, 10);
-  //         const noOfScans = qr.scans ?? 0;
+          const scanLimit = parseInt(configuration?.scanLimit, 10);
+          const noOfScans = qr.scans ?? 0;
 
-  //         if(noOfScans<scanLimit){
-  //           if(configuration?.enablePassword){
-  //             setShowPassword(true);
-  //             return;
-  //           }else{
-  //             await updateScanLimit({docId: qr.id});
+          if(noOfScans<scanLimit){
+            if(configuration?.enablePassword){
+              setShowPassword(true);
+              return;
+            }else{
+              await updateScanLimit({docId: qr.id});
               
-  //           }
-  //         }else{
-  //           setScanLimit(true)
-  //           return;
-  //         }
-  //       }else if(configuration?.enablePassword){
-  //         setShowPassword(true);
-  //         return;
-  //       }else{
+            }
+          }else{
+            setScanLimit(true)
+            return;
+          }
+        }else if(configuration?.enablePassword){
+          setShowPassword(true);
+          return;
+        }else{
           
-  //         console.log(qr.data.id)
+          console.log(qr.data.id)
 
-  //         return;
-  //       }
-  //     }
-  //   }
-  //   fetchData();
-  // }, [linkId])
+          return;
+        }
+      }
+    }
+    fetchData();
+  }, [linkId])
   
   return (
     <>
+      <SendDialog 
+        open={open}
+        onCancel={()=>setOpen(false)}
+        onSend={()=>{
+          setOpen(false);
+          setSubmitted(true)
+        }}
+      />
       <Grid
         container
         sx={{
@@ -153,8 +166,22 @@ const FeedbackLinkPage = ()=>{
               }}
             >
               {
-                showReview
-                ? <ReviewsList reviews={reviews}/>
+                submitted
+                ? <FeedbackSubmit
+                  onBack={()=>{
+                    setSubmitted(false);
+                    setShowReview(false);
+                    setSelected(null);
+                  }}
+                />
+                : showReview
+                ? <ReviewsList 
+                  reviews={reviews}
+                  onSend={()=>setOpen(true)} 
+                  onBack={()=>{
+                    setShowReview(false);
+                  }}
+                />
                 : selected!=null
                   ? <FeedbackForm 
                     value={reviews[selected]}
@@ -166,6 +193,7 @@ const FeedbackLinkPage = ()=>{
                       setReviews(reviews);
                       setSelected(null);
                     }}
+                    onSend={()=>setOpen(true)}
                   />
                   : <FeedbackCategories 
                       values={reviews}

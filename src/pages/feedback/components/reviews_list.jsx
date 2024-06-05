@@ -1,7 +1,7 @@
 import { StarFilled, StarOutlined } from "@ant-design/icons";
-import { Button, Divider, ListItem, ListItemIcon, ListItemText, Rating, Stack, Typography } from "@mui/material";
+import { Button, Divider, ListItem, ListItemText, Rating, Stack, Typography } from "@mui/material";
 
-const ReviewsList = ({reviews})=>{
+const ReviewsList = ({reviews, onSend, onBack})=>{
   return (
     <Stack
       spacing={2}
@@ -46,7 +46,11 @@ const ReviewsList = ({reviews})=>{
         </Stack>
 
         <Stack direction={"row"} spacing={2} sx={{pt: 3}}>
-          <Button variant="contained" fullWidth>Send Feedback</Button>
+          {
+            Object.keys(reviews).length>0
+            ? <Button onClick={()=>onSend()} variant="contained" fullWidth>Send Feedback</Button>
+            : <Button onClick={()=>onBack()} variant="contained" fullWidth>Review Category</Button>
+          }
         </Stack>
     </Stack>
   )
