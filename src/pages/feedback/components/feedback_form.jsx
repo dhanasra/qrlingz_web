@@ -56,7 +56,7 @@ const FeedbackForm = ({category, value, onChange, onSend})=>{
               onChange(rating, comment)
             }}  
           >Save and rate more</Button>
-          <Button onClick={()=>onSend()} disabled={!enable} variant="contained" fullWidth>Send Feedback</Button>
+          <Button onClick={()=>onSend(rating, comment)} disabled={!enable} variant="contained" fullWidth>Send Feedback</Button>
         </Stack>
       </Stack>
     </>

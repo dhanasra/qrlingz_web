@@ -7,6 +7,21 @@ import { saveReview } from "../../../network/feedback_service";
 const UserForm = ({id, data, reviews, onSend, onCancel})=>{
 
   const [loading, setLoading] = useState(false);
+  
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Invalid email address')
+      .max(255)
+      .test('email-required', 'Email is required', function(value) {
+        return data.emailMandatory ? !!value : true;
+      }),
+    phone: Yup.string()
+      .matches(/^[0-9]+$/, 'Phone number is not valid')
+      .max(15, 'Phone number can\'t be longer than 15 characters')
+      .test('phone-required', 'Phone is required', function(value) {
+        return data.phoneMandatory ? !!value : true;
+      }),
+  });
 
   return (
     <>
@@ -15,25 +30,7 @@ const UserForm = ({id, data, reviews, onSend, onCancel})=>{
           email: '', 
           phone: '', 
         }}
-        validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email('Invalid email address')
-            .max(255)
-            .when('email', {
-              is: () => data.emailMandatory,
-              then: Yup.string().required('Email is required'),
-            }),
-          phone: Yup.string()
-            .matches(
-              /^[0-9]+$/,
-              'Phone number is not valid'
-            )
-            .max(15, 'Phone number can\'t be longer than 15 characters')
-            .when('phone', {
-              is: () => data.phoneMandatory,
-              then: Yup.string().required('Phone is required'),
-            }),
-        })}
+        validationSchema={validationSchema}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting})=>{
           try {
   
@@ -89,7 +86,7 @@ const UserForm = ({id, data, reviews, onSend, onCancel})=>{
                   )}
               </Stack>
               <Stack spacing={1}>
-                <InputLabel htmlFor="phone" sx={{fontSize: "12px"}}>{`Phone Number ${data.emailMandatory? '*': ''}`}</InputLabel>
+                <InputLabel htmlFor="phone" sx={{fontSize: "12px"}}>{`Phone Number ${data.phoneMandatory? '*': ''}`}</InputLabel>
                 <OutlinedInput
                     id="phone"
                     type= "text"

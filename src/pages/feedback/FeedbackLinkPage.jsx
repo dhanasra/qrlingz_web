@@ -202,12 +202,18 @@ const FeedbackLinkPage = ()=>{
                       setReviews(reviews);
                       setSelected(null);
                     }}
-                    onSend={()=>setOpen(true)}
+                    onSend={(rating, comment)=>{
+                      reviews[selected] = { 
+                        rating, comment
+                      }
+                      setReviews(reviews);
+                      setOpen(true)
+                    }}
                   />
                   : <FeedbackCategories 
                       values={reviews}
                       data={data} 
-                      onClick={(c)=>setSelected(c)}
+                      onClick={(c)=>setSelected(c['name'])}
                     />
               }
             </Box>
