@@ -3,7 +3,7 @@ import MainCard from "../../../components/MainCard";
 import { CloseOutlined } from "@ant-design/icons";
 import UserForm from "./user_form";
 
-const SendDialog = ({id, reviews, open, onCancel, onSend})=>{
+const SendDialog = ({id, data, reviews, open, onCancel, onSend})=>{
 
     return (
       <Dialog open={open} >
@@ -27,6 +27,7 @@ const SendDialog = ({id, reviews, open, onCancel, onSend})=>{
             <Stack spacing={2} p={2}>
                 <UserForm
                     id={id}
+                    data={data}
                     reviews={reviews}
                     onSend={()=>onSend()}
                     onCancel={()=>onCancel()}

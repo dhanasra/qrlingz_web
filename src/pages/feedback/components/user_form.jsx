@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as Yup from 'yup';
 import { saveReview } from "../../../network/feedback_service";
 
-const UserForm = ({id, reviews, onSend, onCancel})=>{
+const UserForm = ({id, data, reviews, onSend, onCancel})=>{
 
   const [loading, setLoading] = useState(false);
 
@@ -16,32 +16,41 @@ const UserForm = ({id, reviews, onSend, onCancel})=>{
           phone: '', 
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().max(255).required("Email is required"),
-          phone: Yup.string().max(255).required("Phone is required")
+          email: Yup.string()
+            .email('Invalid email address')
+            .max(255)
+            .when('email', {
+              is: () => data.emailMandatory,
+              then: Yup.string().required('Email is required'),
+            }),
+          phone: Yup.string()
+            .matches(
+              /^[0-9]+$/,
+              'Phone number is not valid'
+            )
+            .max(15, 'Phone number can\'t be longer than 15 characters')
+            .when('phone', {
+              is: () => data.phoneMandatory,
+              then: Yup.string().required('Phone is required'),
+            }),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting})=>{
           try {
   
-            if(qr.configuration.password === values.password){
-              setLoading(true);
+            setLoading(true);
 
-              const data = {
-                email: values.email,
-                phone: values.phone,
-                reviews
-              }
-
-              await saveReview({id, review: data});
-              setLoading(false);
-              onSend();
-            }else{
-              setErrors({
-                password: 'Incorrect Password.'
-              })
+            const data = {
+              email: values.email,
+              phone: values.phone,
+              reviews
             }
-  
+
+            await saveReview({id, review: data});
+            setLoading(false);
+            onSend();
           } catch (err) {
             console.log(err)
+            setLoading(false);
             setStatus({ success: false });
             setErrors({ submit: err.message });
             setSubmitting(false);
@@ -62,7 +71,7 @@ const UserForm = ({id, reviews, onSend, onCancel})=>{
               </Typography>
               </Stack>
               <Stack spacing={1}>
-                <InputLabel htmlFor="email" sx={{fontSize: "12px"}}>Email Address</InputLabel>
+                <InputLabel htmlFor="email" sx={{fontSize: "12px"}}>{`Email Address ${data.emailMandatory? '*': ''}`}</InputLabel>
                 <OutlinedInput
                     id="email"
                     type= "text"
@@ -80,7 +89,7 @@ const UserForm = ({id, reviews, onSend, onCancel})=>{
                   )}
               </Stack>
               <Stack spacing={1}>
-                <InputLabel htmlFor="phone" sx={{fontSize: "12px"}}>Phone Number</InputLabel>
+                <InputLabel htmlFor="phone" sx={{fontSize: "12px"}}>{`Phone Number ${data.emailMandatory? '*': ''}`}</InputLabel>
                 <OutlinedInput
                     id="phone"
                     type= "text"

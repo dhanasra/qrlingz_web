@@ -79,6 +79,7 @@ const FeedbackLinkPage = ()=>{
     <>
       <SendDialog 
         id={fbId}
+        data={data}
         reviews={reviews}
         open={open}
         onCancel={()=>setOpen(false)}
