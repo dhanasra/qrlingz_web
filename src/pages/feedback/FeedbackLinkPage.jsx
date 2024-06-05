@@ -10,6 +10,7 @@ import SendDialog from "./components/send_dialog";
 import FeedbackSubmit from "./components/feedback_submit";
 import { getQRCodeData, updateScanLimit } from "../../network/qr_service";
 import { getFeedbackData } from "../../network/feedback_service";
+import { colorToHex } from "../../theme/colors";
 
 const FeedbackLinkPage = ()=>{
   const { linkId } = useParams();
@@ -27,7 +28,6 @@ const FeedbackLinkPage = ()=>{
 
   const [fbId, setFbId] = useState(null)
   const [data, setData] = useState(null)
-
 
   useEffect(()=>{
     async function fetchData(){
@@ -111,7 +111,7 @@ const FeedbackLinkPage = ()=>{
             
             <Box
               sx={{
-                background: "green",
+                background: colorToHex(data?.design?.theme?.header ?? "Color(0xff2ecc71)"),
                 height: 200,
                 position: "relative",
                 display: "flex",
@@ -120,7 +120,10 @@ const FeedbackLinkPage = ()=>{
               }}
             >
               
-              <Typography variant="h1" color={"white"}>{data?.company}</Typography>
+              <Typography 
+                variant="h1" 
+                color={colorToHex(data?.design?.content?.companyColor ?? "Color(0xff2ecc71)")}
+              >{data?.company}</Typography>
 
               <Box
                 onClick={()=>{  
@@ -163,15 +166,17 @@ const FeedbackLinkPage = ()=>{
             <Box
               sx={{
                 top: 160,
-                left: 24,
-                right: 24,
+                left: { xs: 12, md: 24 },
+                right: { xs: 12, md: 24 },
                 bottom: 80,
                 borderRadius: "4px",
                 boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;",
                 width: 'calc(100%-40)',
                 position: "absolute",
                 background: "white",
-                padding: "30px"
+                padding: {
+                  xs: "24px", md: "30px"
+                }
               }}
             >
               {

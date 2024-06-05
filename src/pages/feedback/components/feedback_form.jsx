@@ -23,18 +23,23 @@ const FeedbackForm = ({category, value, onChange, onSend})=>{
             Please evaluate using the stars.
           </Typography>
         </Stack>
-        <Rating
-          value={rating}
-          emptyIcon={<StarFilled style={{margin: 12}}/>}
-          icon={<StarFilled style={{margin: 12}}/>}
-          onChange={(e)=>{
-            setRating(e.target.value)
-            setEnable(true)
-          }}
-          sx={{
-            fontSize: "2.6rem"
-          }}
-        />
+        <Stack alignItems={"center"}>
+          <Rating
+            value={rating}
+            emptyIcon={<StarFilled style={{margin: 8}}/>}
+            icon={<StarFilled style={{margin: 8}}/>}
+            onChange={(e)=>{
+              setRating(e.target.value)
+              setEnable(true)
+            }}
+            sx={{
+              fontSize: {
+                xs: "2.4rem",
+                md: "2.6rem"
+              }
+            }}
+          />
+        </Stack>
         <OutlinedInput
             id="comment"
             type= "text"

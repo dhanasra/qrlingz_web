@@ -1,24 +1,47 @@
 import { ArrowRightOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { Divider, ListItem, ListItemIcon, ListItemText, Rating, Stack, Typography } from "@mui/material";
+import { colorToHex } from "../../../theme/colors";
 
 const FeedbackCategories = ({data, values, onClick})=>{
 
+  const content = data?.design?.content;
+  console.log(content)
+
+  const titleColor = colorToHex(content?.titleColor ?? "Color(0xFF262626)")
+  const descriptionColor = colorToHex(content?.descColor ?? "Color(0xFF262626)")
+  const categoryColor = colorToHex(content?.categoryColor ?? "Color(0xFF262626)")
+
+  // const titleColor = colorToHex(profileDesign?.titleColor ?? data?.design?.color);
+
   return (
-    <Stack direction={"column"} spacing={2}>
+    <Stack 
+      direction={"column"} 
+      spacing={2}
+      sx={{
+        height: "100%"
+      }}  
+    >
         <Stack direction={"column"} spacing={1}>
-          <Typography variant="h3">
+          <Typography variant="h3" color={titleColor}>
             {data?.title}
           </Typography>
           <Divider/>
-          <Typography variant="body1">
+          <Typography variant="body1" color={descriptionColor}>
             {data?.description}
           </Typography>
         </Stack>
 
-        <Stack direction={"column"} spacing={2}>
+        <Stack 
+          direction={"column"} 
+          spacing={2}
+          sx={{
+            overflow: "scroll"
+          }}
+        >
 
           {
             data?.categories.map((c, idx)=>{
+              console.log(c)
               return (
                 <ListItem 
                   key={`${idx}`}
@@ -31,11 +54,11 @@ const FeedbackCategories = ({data, values, onClick})=>{
                     cursor: "pointer",
                   }}
                 >
-                  <ListItemText>
-                    <Typography variant="h6" fontSize={15}>{c['name']}</Typography>
+                  <ListItemText >
+                    <Typography variant="h6" fontSize={15} color={categoryColor}>{c['name']}</Typography>
                   </ListItemText>
                   <Rating 
-                    value={values[c]?.rating ?? 0} 
+                    value={values[c['name']]?.rating ?? 0} 
                     readOnly
                     sx={{ direction: 'rtl', mx: 1}}
                     icon={<StarFilled style={{margin: 2, fontSize: 18}}/>}
