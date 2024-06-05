@@ -1,24 +1,24 @@
 import { ArrowRightOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { Divider, ListItem, ListItemIcon, ListItemText, Rating, Stack, Typography } from "@mui/material";
 
-const FeedbackCategories = ({categories, values, onClick})=>{
+const FeedbackCategories = ({data, values, onClick})=>{
 
   return (
     <Stack direction={"column"} spacing={2}>
         <Stack direction={"column"} spacing={1}>
           <Typography variant="h3">
-            Leave your feedback
+            {data?.title}
           </Typography>
           <Divider/>
           <Typography variant="body1">
-            Select category to review
+            {data?.description}
           </Typography>
         </Stack>
 
         <Stack direction={"column"} spacing={2}>
 
           {
-            categories.map((c, idx)=>{
+            data?.categories.map((c, idx)=>{
               return (
                 <ListItem 
                   key={`${idx}`}
@@ -32,7 +32,7 @@ const FeedbackCategories = ({categories, values, onClick})=>{
                   }}
                 >
                   <ListItemText>
-                    <Typography variant="h6" fontSize={15}>{c}</Typography>
+                    <Typography variant="h6" fontSize={15}>{c['name']}</Typography>
                   </ListItemText>
                   <Rating 
                     value={values[c]?.rating ?? 0} 

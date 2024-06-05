@@ -9,11 +9,11 @@ import ReviewsList from "./components/reviews_list";
 import SendDialog from "./components/send_dialog";
 import FeedbackSubmit from "./components/feedback_submit";
 import { getQRCodeData, updateScanLimit } from "../../network/qr_service";
+import { getFeedbackData } from "../../network/feedback_service";
 
 const FeedbackLinkPage = ()=>{
   const { linkId } = useParams();
 
-  const categories = ['Food', 'Ambients', 'Service', 'Quality'];
   const [selected, setSelected] = useState(null);
 
   const [ reviews, setReviews ] = useState({});
@@ -25,12 +25,15 @@ const FeedbackLinkPage = ()=>{
   const [showScanLimit, setScanLimit] = useState(false)
   const [qr, setQR] = useState(null)
 
-  const [data, setData] = useState(  null)
+  const [fbId, setFbId] = useState(null)
+  const [data, setData] = useState(null)
 
 
   useEffect(()=>{
     async function fetchData(){
       const resp = await getQRCodeData({ linkId });
+
+      console.log(resp)
 
       if(resp.success){
         const qr = resp.data;
@@ -59,9 +62,12 @@ const FeedbackLinkPage = ()=>{
           setShowPassword(true);
           return;
         }else{
-          
-          console.log(qr.data.id)
-
+          setFbId(qr.data.id);
+          const res = await getFeedbackData({id: qr.data.id});
+          if(res.success){
+            setData(res.data)
+            console.log(res.data)
+          }
           return;
         }
       }
@@ -72,6 +78,8 @@ const FeedbackLinkPage = ()=>{
   return (
     <>
       <SendDialog 
+        id={fbId}
+        reviews={reviews}
         open={open}
         onCancel={()=>setOpen(false)}
         onSend={()=>{
@@ -111,7 +119,7 @@ const FeedbackLinkPage = ()=>{
               }}
             >
               
-              <Typography variant="h1" color={"white"}>Spiderlingz</Typography>
+              <Typography variant="h1" color={"white"}>{data?.company}</Typography>
 
               <Box
                 onClick={()=>{  
@@ -197,7 +205,7 @@ const FeedbackLinkPage = ()=>{
                   />
                   : <FeedbackCategories 
                       values={reviews}
-                      categories={categories} 
+                      data={data} 
                       onClick={(c)=>setSelected(c)}
                     />
               }

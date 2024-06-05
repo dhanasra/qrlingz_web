@@ -1,9 +1,9 @@
-import { Button, Dialog, IconButton, Stack, Typography } from "@mui/material";
+import { Dialog, Stack, Typography } from "@mui/material";
 import MainCard from "../../../components/MainCard";
 import { CloseOutlined } from "@ant-design/icons";
 import UserForm from "./user_form";
 
-const SendDialog = ({open, onCancel, onSend})=>{
+const SendDialog = ({id, reviews, open, onCancel, onSend})=>{
 
     return (
       <Dialog open={open} >
@@ -26,6 +26,8 @@ const SendDialog = ({open, onCancel, onSend})=>{
           >
             <Stack spacing={2} p={2}>
                 <UserForm
+                    id={id}
+                    reviews={reviews}
                     onSend={()=>onSend()}
                     onCancel={()=>onCancel()}
                 />

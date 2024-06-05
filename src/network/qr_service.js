@@ -20,12 +20,7 @@ export const getQRCodeData = async ({ linkId }) => {
 export const updateScanLimit = async ({ docId }) => {
 
   const docRef = doc(db, "HISTORY", docId);
-
-  console.log(docRef)
-
   const docSnap = await getDoc(docRef);
-
-  console.log(docSnap)
   
   if (docSnap.exists()) {
     await updateDoc(docRef, {
