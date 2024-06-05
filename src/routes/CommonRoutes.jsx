@@ -5,6 +5,7 @@ import PrivacyPolicy from '../pages/legal/PrivacyPolicy';
 import TermsOfService from '../pages/legal/TermsOfService';
 import AboutUs from '../pages/info/AboutUs';
 import ForwardLinkPage from "../pages/qrcode/ForwardLinkPage";
+import FeedbackLinkPage from "../pages/feedback/FeedbackLinkPage";
 
 const CommonRoutes = {
     path: '/',
@@ -13,6 +14,10 @@ const CommonRoutes = {
       {
         path: 'q/:linkId',
         element: <ForwardLinkPage />
+      },
+      {
+        path: 'f/:linkId',
+        element: <FeedbackLinkPage />
       },
       {
         path: 'legal/privacy',
