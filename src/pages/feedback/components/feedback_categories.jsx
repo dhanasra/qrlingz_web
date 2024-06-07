@@ -1,6 +1,7 @@
 import { ArrowRightOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { Divider, ListItem, ListItemIcon, ListItemText, Rating, Stack, Typography } from "@mui/material";
 import { colorToHex } from "../../../theme/colors";
+import { getFeedbackIcons } from "../../../utils/utils";
 
 const FeedbackCategories = ({data, values, onClick})=>{
 
@@ -54,6 +55,11 @@ const FeedbackCategories = ({data, values, onClick})=>{
                     cursor: "pointer",
                   }}
                 >
+                  <ListItemIcon>
+                  {
+                    getFeedbackIcons(c['icon'])
+                  }
+                  </ListItemIcon>
                   <ListItemText >
                     <Typography variant="h6" fontSize={15} color={categoryColor}>{c['name']}</Typography>
                   </ListItemText>
